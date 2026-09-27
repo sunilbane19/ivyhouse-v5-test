@@ -20,13 +20,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          curl -L --fail --retry 3 \
-            https://github.com/sunilbane19/ivyhouse-website/archive/refs/heads/v5-pwa.tar.gz \
-            -o /tmp/ivyhouse-v5.tar.gz
-          tar -xzf /tmp/ivyhouse-v5.tar.gz -C /tmp
+          rm -rf /tmp/ivyhouse-v5
+          git clone --depth 1 --branch v5-pwa https://github.com/sunilbane19/ivyhouse-website.git /tmp/ivyhouse-v5
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-          cp -a /tmp/ivyhouse-website-v5-pwa/. .
-          rm -f /tmp/ivyhouse-v5.tar.gz
+          find /tmp/ivyhouse-v5 -mindepth 1 -maxdepth 1 ! -name .git -exec cp -a {} . \;
+          rm -rf /tmp/ivyhouse-v5
 
       - name: Commit imported V5 site
         shell: bash
