@@ -1,8 +1,9 @@
 const CACHE_NAME = "ivy-house-v5-shell";
+const BASE = self.registration.scope;
 const APP_SHELL = [
-  "/",
-  "/index.html",
-  "/styles.css"
+  BASE,
+  new URL("index.html", BASE).toString(),
+  new URL("styles.css", BASE).toString()
 ];
 
 self.addEventListener("install", event => {
@@ -17,9 +18,7 @@ self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
@@ -28,13 +27,13 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const request = event.request;
   const url = new URL(request.url);
-
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
-
-  // Keep Admin, Supabase, OAuth and other dynamic requests live.
-  if (url.pathname === "/admin.html" || url.pathname.startsWith("/supabase/") ||
-      url.pathname.includes("oauth") || url.pathname.includes("auth")) return;
-
+  const scope = new URL(BASE);
+  if (!url.href.startsWith(scope.href)) return;
+  if (url.pathname.endsWith("/admin.html") ||
+      url.pathname.includes("/supabase/") ||
+      url.pathname.includes("oauth") ||
+      url.pathname.includes("auth")) return;
   event.respondWith(
     fetch(request)
       .then(response => {
@@ -42,6 +41,8 @@ self.addEventListener("fetch", event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
         return response;
       })
-      .catch(() => caches.match(request).then(cached => cached || caches.match("/index.html")))
+      .catch(() => caches.match(request).then(cached =>
+        cached || caches.match(new URL("index.html", BASE).toString())
+      ))
   );
 });
