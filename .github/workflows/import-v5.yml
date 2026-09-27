@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   import:
-    if: !contains(github.event.head_commit.message, 'Import V5 PWA')
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.head_commit.message != 'Import V5 PWA' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout test repository
