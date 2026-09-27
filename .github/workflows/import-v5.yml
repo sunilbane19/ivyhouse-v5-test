@@ -1,5 +1,6 @@
 name: Import V5 PWA from ivyhouse-website
 # V5 source-sync trigger
+# Pull latest v5-pwa after source-side admin/PWA updates
 
 on:
   workflow_dispatch:
