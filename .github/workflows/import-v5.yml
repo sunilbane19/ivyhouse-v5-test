@@ -1,6 +1,7 @@
 name: Import V5 PWA from ivyhouse-website
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -19,17 +20,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           curl -L --fail --retry 3 \
             https://github.com/sunilbane19/ivyhouse-website/archive/refs/heads/v5-pwa.tar.gz \
             -o /tmp/ivyhouse-v5.tar.gz
-
           tar -xzf /tmp/ivyhouse-v5.tar.gz -C /tmp
-
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-
           cp -a /tmp/ivyhouse-website-v5-pwa/. .
-
           rm -f /tmp/ivyhouse-v5.tar.gz
 
       - name: Commit imported V5 site
