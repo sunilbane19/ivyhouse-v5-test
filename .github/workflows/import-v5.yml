@@ -1,0 +1,44 @@
+name: Import V5 PWA from ivyhouse-website
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    if: !contains(github.event.head_commit.message, 'Import V5 PWA')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test repository
+        uses: actions/checkout@v4
+
+      - name: Import v5-pwa branch
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -L --fail --retry 3 \
+            https://github.com/sunilbane19/ivyhouse-website/archive/refs/heads/v5-pwa.tar.gz \
+            -o /tmp/ivyhouse-v5.tar.gz
+
+          tar -xzf /tmp/ivyhouse-v5.tar.gz -C /tmp
+
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+
+          cp -a /tmp/ivyhouse-website-v5-pwa/. .
+
+          rm -f /tmp/ivyhouse-v5.tar.gz
+
+      - name: Commit imported V5 site
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Import V5 PWA"
+          git push origin HEAD:main
