@@ -17,6 +17,4 @@ V5 adds the Progressive Web App foundation while preserving the V4 application, 
 
 V5 is a development branch and is not frozen.
 
-### Test repository sync
-- The V5 test repository imports the latest `v5-pwa` branch from `ivyhouse-website`.
-- This file was updated to trigger a fresh V5 import after the latest staging changes.
+V5 PWA deployment prepared with compact Ivy House home-screen icon.
