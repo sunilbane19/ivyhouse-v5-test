@@ -18,3 +18,5 @@ V5 adds the Progressive Web App foundation while preserving the V4 application, 
 V5 is a development branch and is not frozen.
 
 V5 PWA deployment prepared with compact Ivy House home-screen icon.
+
+Mobile Gallery wrapping fix refreshed.
